@@ -12,11 +12,11 @@ module.exports = {
   findById: (id) =>
     prisma.product.findUnique({
       where: { id },
-      include: { category: true },
+      include: { category: true , isActive: true},
     }),
 
   create: (data) => prisma.product.create({ data }),
-
+  delete: (data)=> prisma.product.delete({ where: { id } }),
   update: (id, data) => prisma.product.update({ where: { id }, data }),
 
   setActive: (id, isActive) =>

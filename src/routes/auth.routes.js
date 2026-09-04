@@ -1,4 +1,10 @@
 const express = require('express');
 const router = express.Router();
-// TODO: implementar en el paso "Seguridad / Auth" (login de AdminUser -> JWT)
+
+const authController = require('../controllers/auth.controller');
+
+router.post('/login', authController.login);
+
+router.post('/users', authController.createUser);
+
 module.exports = router;

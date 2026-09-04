@@ -10,6 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
 // =========================================================
 // USUARIOS ADMIN
 // =========================================================
@@ -29,6 +31,7 @@ model AdminUser {
   @@map("admin_users")
 }
 
+
 // =========================================================
 // CATALOGO
 // =========================================================
@@ -42,6 +45,8 @@ model Category {
 
   @@map("categories")
 }
+
+
 
 model Product {
   id          String   @id @default(uuid())
@@ -62,6 +67,8 @@ model Product {
   @@map("products")
 }
 
+
+
 // =========================================================
 // CLIENTE
 // =========================================================
@@ -79,6 +86,9 @@ model Customer {
 
   @@map("customers")
 }
+
+
+
 
 // =========================================================
 // CARRITO (previo al pedido)
@@ -112,16 +122,7 @@ model CartItem {
 // =========================================================
 enum OrderStatus {
   PendingContact
-  Contacted
-  Confirmed
-  AwaitingPayment
-  Paid
-  Processing
-  ReadyForDelivery
-  Delivered
   Completed
-  Cancelled
-  Expired
   Rejected
   PaymentFailed
 }
@@ -190,22 +191,7 @@ model OrderStatusHistory {
   @@map("order_status_history")
 }
 
-// =========================================================
-// CONTACTO CON EL CLIENTE
-// =========================================================
-model ContactAttempt {
-  id          String    @id @default(uuid())
-  orderId     String
-  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  phoneUsed   String
-  channel     String    // Llamada | WhatsApp | Correo | Otro
-  result      String    // ej. "Cliente confirmó pedido", "Sin respuesta"
-  adminUserId String?
-  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
-  createdAt   DateTime  @default(now())
 
-  @@map("contact_attempts")
-}
 
 // =========================================================
 // PAGO (entidad independiente del pedido)
