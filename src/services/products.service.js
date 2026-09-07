@@ -66,13 +66,10 @@ const setActive = async (id, isActive) => {
 
 
 module.exports = {
-  
-  list: () => productsRepository.findAllActive(),
+  listActive: () => productsRepository.findAllActive(),
   getById: (id) => productsRepository.findById(id),
   create,
   update,
   delete: (id) => productsRepository.delete(id),
   setActive
-
-
 };

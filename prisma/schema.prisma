@@ -121,7 +121,7 @@ model CartItem {
 // PEDIDO
 // =========================================================
 enum OrderStatus {
-  PendingContact
+  Pending
   Completed
   Rejected
   PaymentFailed

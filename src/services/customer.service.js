@@ -1,4 +1,15 @@
-const customerRepository = require('../repositories/Customer.repository');
+const customerRepository = require('../repositories/customer.repository');
+
+const getById = async (id) => {
+    if (!id) {
+        throw new Error('El ID del cliente es obligatorio');
+    }
+    const customer = await customerRepository.findById(id);
+    if (!customer) {
+        throw new Error('El cliente no existe');
+    }
+    return customer;
+};
 
 const create = async (data) => {
 
@@ -53,6 +64,7 @@ const update = async (id, data) => {
 
 module.exports = {
     list: () => customerRepository.findAll(),
+    getById,
     create,
     update,
     delete: (id) => customerRepository.delete(id),

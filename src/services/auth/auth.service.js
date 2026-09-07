@@ -1,90 +1,62 @@
-const bcrypt = require('bcrypt');
-const authRepository = require('../repositories/auth.repository');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const adminRepository = require('../../repositories/admin.repository');
 
 const createUser = async (data) => {
+  if (!data.fullName || data.fullName.trim() === '') {
+    throw new Error('El nombre es obligatorio');
+  }
+  if (!data.email || data.email.trim() === '') {
+    throw new Error('El correo es obligatorio');
+  }
+  if (!data.password || data.password.length < 6) {
+    throw new Error('La contraseña debe tener al menos 6 caracteres');
+  }
 
-    if (!data.fullName || data.fullName.trim() === '') {
-        throw new Error('El nombre completo es obligatorio');
-    }
+  const existente = await adminRepository.findByEmail(data.email.trim().toLowerCase());
+  if (existente) {
+    throw new Error('Ya existe un usuario con ese correo');
+  }
 
-    if (!data.email || data.email.trim() === '') {
-        throw new Error('El correo electrónico es obligatorio');
-    }
+  const passwordHash = await bcrypt.hash(data.password, 10);
 
-    if (!data.password || data.password.trim() === '') {
-        throw new Error('La contraseña es obligatoria');
-    }
-
-    if (data.password.length < 8) {
-        throw new Error('La contraseña debe tener al menos 8 caracteres');
-    }
-
-    const email = data.email.trim().toLowerCase();
-
-    const existingUser = await authRepository.findByEmail(email);
-
-    if (existingUser) {
-        throw new Error('Ya existe un usuario con ese correo electrónico');
-    }
-
-    if (data.role && !['Admin', 'Vendedor'].includes(data.role)) {
-        throw new Error('El rol debe ser Admin o Vendedor');
-    }
-
-    // La contraseña nunca se guarda directamente
-    const passwordHash = await bcrypt.hash(data.password, 10);
-
-    return authRepository.createUser({
-        fullName: data.fullName.trim(),
-        email,
-        passwordHash,
-        role: data.role || 'Vendedor',
-        isActive: true
-    });
+  return adminRepository.createUser({
+    fullName: data.fullName.trim(),
+    email: data.email.trim().toLowerCase(),
+    passwordHash,
+  });
 };
-
 
 const login = async (email, password) => {
+  if (!email || !password) {
+    throw new Error('Correo y contraseña son obligatorios');
+  }
 
-    if (!email || email.trim() === '') {
-        throw new Error('El correo electrónico es obligatorio');
-    }
+  const user = await adminRepository.findByEmail(email.trim().toLowerCase());
+  if (!user || !user.isActive) {
+    throw new Error('Credenciales inválidas');
+  }
 
-    if (!password || password.trim() === '') {
-        throw new Error('La contraseña es obligatoria');
-    }
+  const passwordOk = await bcrypt.compare(password, user.passwordHash);
+  if (!passwordOk) {
+    throw new Error('Credenciales inválidas');
+  }
 
-    const admin = await authRepository.findByEmail(
-        email.trim().toLowerCase()
-    );
+  const token = jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '8h' }
+  );
 
-    if (!admin) {
-        throw new Error('Correo o contraseña incorrectos');
-    }
-
-    if (!admin.isActive) {
-        throw new Error('El usuario está desactivado');
-    }
-
-    const passwordCorrecta = await bcrypt.compare(
-        password,
-        admin.passwordHash
-    );
-
-    if (!passwordCorrecta) {
-        throw new Error('Correo o contraseña incorrectos');
-    }
-
-    return {
-        id: admin.id,
-        fullName: admin.fullName,
-        email: admin.email,
-        role: admin.role
-    };
+  return {
+    token,
+    user: {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+    },
+  };
 };
 
-
-module.exports = {
-    createUser,
-    login
-};
+module.exports = { createUser, login };

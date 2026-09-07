@@ -7,9 +7,14 @@ const cartRoutes = require('./routes/cart.routes');
 const orderRoutes = require('./routes/orders.routes');
 const adminOrderRoutes = require('./routes/admin.orders.routes');
 const authRoutes = require('./routes/auth.routes');
+const customerRoutes = require('./routes/customers.routes');
+
 
 const app = express();
+const swaggerUi = require('swagger-ui-express'); 
+const swaggerSpec = require('./config/swagger'); 
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json());
 
@@ -20,6 +25,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/customers', customerRoutes);
 
 // Admin
 app.use('/api/auth', authRoutes);
