@@ -7,7 +7,7 @@ const cartRoutes = require('./routes/cart.routes');
 const orderRoutes = require('./routes/orders.routes');
 const adminOrderRoutes = require('./routes/admin.orders.routes');
 const authRoutes = require('./routes/auth.routes');
-const customerRoutes = require('./routes/customers.routes');
+const customerRoutes = require('./routes/customer.routes');
 
 
 const app = express();

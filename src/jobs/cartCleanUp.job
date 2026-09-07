@@ -1,0 +1,31 @@
+const cron = require('node-cron');
+const prisma = require('../config/prisma');
+
+const cleanExpiredCarts = async () => {
+  try {
+    console.log('🧹 Iniciando limpieza de carritos...');
+
+    // Primero eliminamos los items de los carritos
+    const deletedItems = await prisma.cartItem.deleteMany({});
+
+    // Luego eliminamos los carritos
+    const deletedCarts = await prisma.cart.deleteMany({});
+
+    console.log(
+      `🧹 Limpieza completada: ${deletedCarts.count} carritos y ${deletedItems.count} items eliminados.`
+    );
+  } catch (error) {
+    console.error('❌ Error limpiando carritos:', error);
+  }
+};
+
+// Todos los días a las 10:00 PM
+cron.schedule(
+  '0 22 * * *',
+  cleanExpiredCarts,
+  {
+    timezone: 'America/Tegucigalpa',
+  }
+);
+
+console.log('⏰ Job de limpieza de carritos programado para las 10:00 PM.');

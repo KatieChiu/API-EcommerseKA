@@ -10,10 +10,10 @@ module.exports = {
     }),
 
   findById: (id) =>
-    prisma.product.findUnique({
-      where: { id },
-      include: { category: true , isActive: true},
-    }),
+  prisma.product.findUnique({
+    where: { id },
+    include: { category: true },
+  }),
 
   create: (data) => prisma.product.create({ data }),
   delete: (data)=> prisma.product.delete({ where: { id } }),

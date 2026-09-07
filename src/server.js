@@ -1,11 +1,12 @@
 require('dotenv').config();
+
 const app = require('./app');
+
+// Iniciar jobs/background tasks
+require('./jobs/cartCleanUp.job');
 
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
-  console.log(`API escuchando en http://localhost:${4000}`);
+  console.log(`API escuchando en http://localhost:${PORT}`);
 });
-const authRoutes = require('./routes/auth.routes');
-
-app.use('/api/auth', authRoutes);

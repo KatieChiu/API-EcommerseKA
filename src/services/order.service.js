@@ -1,6 +1,6 @@
 const orderRepository = require('../repositories/order.repository');
 const productRepository = require('../repositories/products.repository');
-const mailService = require('./mail.service');
+//const mailService = require('./email.service');
 
 const create = async (data) => {
 
@@ -70,16 +70,214 @@ const create = async (data) => {
         items: { create: itemsData },
     });
 
-    // Notificar al vendedor — si el correo falla, no debe tumbar la creación del pedido
-    try {
-        await mailService.enviarCorreo({
-            to: process.env.VENDOR_EMAIL,
-            subject: `Nuevo pedido pendiente #${order.orderNumber}`,
-            text: `Cliente: ${order.contactName}\nTeléfono: ${order.primaryPhone}\nTotal: L ${order.total}\nDirección: ${order.deliveryAddress}`,
-        });
-    } catch (err) {
-        console.error('No se pudo enviar el correo de notificación:', err);
-    }
+    const { enviarCorreo } = require('./email.service');
+
+   await enviarCorreo({
+    to: process.env.SELLER_EMAIL,
+    subject: `🛒 Nuevo pedido #${order.orderNumber}`,
+    text: `
+Nuevo pedido #${order.orderNumber}
+
+Cliente: ${order.contactName}
+Teléfono: ${order.primaryPhone}
+Teléfono secundario: ${order.secondaryPhone || 'No proporcionado'}
+Dirección: ${order.deliveryAddress}
+
+Total: L ${order.total}
+Estado: ${order.status}
+    `,
+    html: `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Nuevo pedido</title>
+        </head>
+
+        <body style="
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333333;
+        ">
+
+            <div style="
+                max-width: 650px;
+                margin: 40px auto;
+                background-color: #ffffff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            ">
+
+                <!-- HEADER -->
+                <div style="
+                    background-color: #1f3d2b;
+                    padding: 28px 30px;
+                    color: #ffffff;
+                ">
+                    <h1 style="
+                        margin: 0;
+                        font-size: 24px;
+                    ">
+                        🛒 Nuevo pedido recibido
+                    </h1>
+
+                    <p style="
+                        margin: 8px 0 0;
+                        font-size: 15px;
+                        opacity: 0.9;
+                    ">
+                        Pedido #${order.orderNumber}
+                    </p>
+                </div>
+
+
+                <!-- CONTENIDO -->
+                <div style="padding: 30px;">
+
+                    <p style="
+                        margin-top: 0;
+                        font-size: 16px;
+                        line-height: 1.6;
+                    ">
+                        Se ha registrado un nuevo pedido en <strong>eKAT</strong>.
+                    </p>
+
+
+                    <!-- CLIENTE -->
+                    <div style="
+                        margin-top: 25px;
+                        border: 1px solid #e5e5e5;
+                        border-radius: 8px;
+                        padding: 20px;
+                    ">
+
+                        <h2 style="
+                            margin: 0 0 15px;
+                            font-size: 17px;
+                            color: #1f3d2b;
+                        ">
+                            👤 Información del cliente
+                        </h2>
+
+                        <p style="margin: 8px 0;">
+                            <strong>Nombre:</strong><br>
+                            ${order.contactName}
+                        </p>
+
+                        <p style="margin: 8px 0;">
+                            <strong>Teléfono:</strong><br>
+                            ${order.primaryPhone}
+                        </p>
+
+                        <p style="margin: 8px 0;">
+                            <strong>Teléfono secundario:</strong><br>
+                            ${order.secondaryPhone || 'No proporcionado'}
+                        </p>
+
+                    </div>
+
+
+                    <!-- ENTREGA -->
+                    <div style="
+                        margin-top: 20px;
+                        border: 1px solid #e5e5e5;
+                        border-radius: 8px;
+                        padding: 20px;
+                    ">
+
+                        <h2 style="
+                            margin: 0 0 15px;
+                            font-size: 17px;
+                            color: #1f3d2b;
+                        ">
+                            📍 Información de entrega
+                        </h2>
+
+                        <p style="
+                            margin: 0;
+                            line-height: 1.6;
+                        ">
+                            ${order.deliveryAddress}
+                        </p>
+
+                    </div>
+
+
+                    <!-- TOTAL -->
+                    <div style="
+                        margin-top: 25px;
+                        padding: 20px;
+                        background-color: #f7f8f6;
+                        border-radius: 8px;
+                        text-align: center;
+                    ">
+
+                        <p style="
+                            margin: 0 0 8px;
+                            font-size: 14px;
+                            color: #666666;
+                        ">
+                            TOTAL DEL PEDIDO
+                        </p>
+
+                        <p style="
+                            margin: 0;
+                            font-size: 30px;
+                            font-weight: bold;
+                            color: #1f3d2b;
+                        ">
+                            L ${order.total}
+                        </p>
+
+                        <p style="
+                            margin: 10px 0 0;
+                            font-size: 14px;
+                        ">
+                            Estado: <strong>${order.status}</strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FOOTER -->
+                <div style="
+                    padding: 20px 30px;
+                    background-color: #fafafa;
+                    border-top: 1px solid #eeeeee;
+                    text-align: center;
+                ">
+
+                    <p style="
+                        margin: 0;
+                        font-size: 13px;
+                        color: #777777;
+                    ">
+                        Este correo fue generado automáticamente por eKAT.
+                    </p>
+
+                    <p style="
+                        margin: 6px 0 0;
+                        font-size: 12px;
+                        color: #999999;
+                    ">
+                        Por favor, no respondas directamente a este correo.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </body>
+        </html>
+    `,
+});
+
 
     return order;
 };

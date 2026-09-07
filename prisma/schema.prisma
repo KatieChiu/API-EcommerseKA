@@ -24,7 +24,6 @@ model AdminUser {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
 
-  contactAttempts ContactAttempt[]
   confirmedPayments Payment[] @relation("PaymentConfirmedBy")
   statusChanges     OrderStatusHistory[]
 
@@ -139,7 +138,7 @@ model Order {
   secondaryPhone   String?
   deliveryAddress  String
 
-  status        OrderStatus @default(PendingContact)
+  status        OrderStatus @default(Pending)
 
   subtotal      Decimal     @db.Decimal(10, 2)
   discountTotal Decimal     @db.Decimal(10, 2) @default(0)
@@ -152,7 +151,7 @@ model Order {
 
   items            OrderItem[]
   payments         Payment[]
-  contactAttempts  ContactAttempt[]
+
   statusHistory    OrderStatusHistory[]
 
   @@map("orders")

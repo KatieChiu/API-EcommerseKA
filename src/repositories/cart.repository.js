@@ -27,5 +27,6 @@ module.exports = {
   updateItem: (id, data) =>
     prisma.cartItem.update({ where: { id }, data }),
 
+  
   deleteItem: (id) => prisma.cartItem.delete({ where: { id } }),
 };
