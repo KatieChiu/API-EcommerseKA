@@ -14,7 +14,17 @@ const requireAdmin = require('../middlewares/requireAdmin');
  *         description: Lista de categorías
  */
 router.get('/', controller.list);
-
+/**
+ * @swagger
+ * /api/admin/categories:
+ *   get:
+ *     summary: Listar categorías
+ *     tags: [Categories]
+ *     responses:
+ *       200:
+ *         description: Lista de categorías
+ */
+router.get('/', controller.list);
 /**
  * @swagger
  * /api/categories/{id}:
@@ -35,7 +45,7 @@ router.get('/:id', controller.getbyId);
 
 /**
  * @swagger
- * /api/categories:
+ * /api/admin/categories:
  *   post:
  *     summary: Crear categoría (admin)
  *     tags: [Categories]
@@ -63,7 +73,7 @@ router.post('/', requireAdmin, controller.create);
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/admin/categories/{id}:
  *   put:
  *     summary: Actualizar categoría (admin)
  *     tags: [Categories]
@@ -95,7 +105,7 @@ router.put('/:id', requireAdmin, controller.update);
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/admin/categories/{id}:
  *   delete:
  *     summary: Eliminar categoría (admin)
  *     tags: [Categories]

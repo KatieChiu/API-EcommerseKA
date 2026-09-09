@@ -15,6 +15,19 @@ const requireAdmin = require('../middlewares/requireAdmin');
  */
 router.get('/', controller.list);
 
+
+/**
+ * @swagger
+ * /api/admin/products:
+ *   get:
+ *     summary: Listar productos activos
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: Lista de productos
+ */
+router.get('/', controller.list);
+
 /**
  * @swagger
  * /api/products/{id}:
@@ -37,7 +50,7 @@ router.get('/:id', controller.getById);
 
 /**
  * @swagger
- * /api/products:
+ * /api/admin/products:
  *   post:
  *     summary: Crear un producto (admin)
  *     tags: [Products]
@@ -71,7 +84,7 @@ router.post('/', requireAdmin, controller.create);
 
 /**
  * @swagger
- * /api/products/{id}:
+ * /api/admin/products/{id}:
  *   put:
  *     summary: Actualizar un producto (admin)
  *     tags: [Products]
