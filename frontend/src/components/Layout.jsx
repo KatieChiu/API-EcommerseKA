@@ -9,7 +9,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <footer className="border-t border-sage py-8 text-center text-sm text-ink/60">
-        eKAT — Tienda en línea
+        e-commerceKAT — Tienda en línea
       </footer>
     </div>
   );

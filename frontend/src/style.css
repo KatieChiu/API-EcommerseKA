@@ -2,12 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
 @theme {
-  --color-ink: #1A1A17;
-  --color-cream: #F7F4EE;
-  --color-forest: #12312A;
-  --color-forest-light: #1D4B3F;
-  --color-mustard: #D9A441;
-  --color-sage: #E3E7DE;
+  --color-ink: #2b2d42;
+  --color-cream: #edf2f4;
+  --color-forest: #2b2d42;
+  --color-forest-light: #3d3f5c;
+  --color-mustard: #ef233c;
+  --color-sage: #8d99ae;
+
+  /* Extras de la paleta, disponibles como bg-flag-red, text-flag-red, etc. */
+  --color-flag-red: #d90429;
+  --color-punch-red: #ef233c;
+  --color-lavender-grey: #8d99ae;
+  --color-platinum: #edf2f4;
+  --color-space-indigo: #2b2d42;
 
   --font-display: 'Fraunces', serif;
   --font-sans: 'Inter', sans-serif;
