@@ -5,14 +5,10 @@ const cleanExpiredCarts = async () => {
   try {
     console.log('🧹 Iniciando limpieza de carritos...');
 
-    // Primero eliminamos los items de los carritos
-    const deletedItems = await prisma.cartItem.deleteMany({});
-
-    // Luego eliminamos los carritos
     const deletedCarts = await prisma.cart.deleteMany({});
 
     console.log(
-      `🧹 Limpieza completada: ${deletedCarts.count} carritos y ${deletedItems.count} items eliminados.`
+      `🧹 Limpieza completada: ${deletedCarts.count} carritos eliminados.`
     );
   } catch (error) {
     console.error('❌ Error limpiando carritos:', error);
