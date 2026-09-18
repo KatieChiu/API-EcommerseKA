@@ -6,6 +6,9 @@ module.exports = {
         orderBy: {
             createdAt: 'desc',
         },
+        include: {
+            items: true,
+        },
     }),
 
     findById: (id) => prisma.order.findUnique({
