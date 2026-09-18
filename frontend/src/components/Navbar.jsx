@@ -82,7 +82,7 @@ export default function Navbar() {
               <IconClipboard />
               Pedidos
             </Link>
-            <Link to="/admin/product" className="flex items-center gap-2 hover:text-forest transition-colors">
+            <Link to="/admin/products" className="flex items-center gap-2 hover:text-forest transition-colors">
               <IconBox />
               Productos
             </Link>
